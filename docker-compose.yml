@@ -1,0 +1,10 @@
+services:
+  banco-database:
+    image: postgres
+    container_name: sistema-bancario
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: accounts
