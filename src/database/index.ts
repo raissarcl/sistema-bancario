@@ -7,5 +7,4 @@ export class Prisma extends PrismaClient {
   constructor() {
     super();
   }
-
 }
