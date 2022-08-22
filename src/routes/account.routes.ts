@@ -1,9 +1,8 @@
-import express, { Request } from 'express';
+import express, { Request, Response } from 'express';
 import { validateAccountRequest } from '../middlewares/validateAccountRequest';
 import { body, header, param, validationResult } from 'express-validator';
 import { AccountController } from '../controllers/account.controller';
 import { container } from 'tsyringe';
-import { Response } from 'express-serve-static-core';
 
 const accountController = container.resolve(AccountController);
 
