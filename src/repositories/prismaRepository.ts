@@ -2,7 +2,6 @@ import { Account } from "@prisma/client";
 import { singleton } from "tsyringe";
 import { Prisma } from "../database";
 import { AccountDTO } from "../dtos/AccountDTO.dto";
-import { AppError } from "../errors/AppError";
 import { IAccountRepository } from "./interfaces/IAccountRepository";
 
 @singleton()
@@ -37,6 +36,14 @@ export class PrismaRepository implements IAccountRepository {
 
   async getAllAccounts(): Promise<Account[]> {
     return await this.prisma.account.findMany();
+  }
+
+  async deleteAccount(cpf: string): Promise<void> {
+    await this.prisma.account.delete({
+      where: {
+        cpf
+      }
+    });
   }
 
   async depositMoney(cpf: string, ammount: number): Promise<void> {
@@ -101,6 +108,16 @@ export class PrismaRepository implements IAccountRepository {
     });
   }
 
-
+  async updateAccount({ newName, newCpf, cpf }: { cpf: string, newName?: string, newCpf?: string }): Promise<void> {
+    await this.prisma.account.update({
+      where: {
+        cpf
+      },
+      data: {
+        name: newName,
+        cpf: newCpf
+      }
+    });
+  }
 
 }

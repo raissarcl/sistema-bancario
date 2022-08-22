@@ -21,7 +21,6 @@ export class AccountController {
     return res.json({ msg: "Accounts found", accounts });
   }
 
-
   async deleteAccount(req: Request, res: Response) {
     const cpf = req.get('cpf');
 
@@ -71,13 +70,11 @@ export class AccountController {
   async updateAccount(req: Request, res: Response) {
     const cpf = req.get('cpf');
 
-    const { name, newCpf } = req.body;
+    const { newName, newCpf } = req.body;
 
-    await this.accountService.updateAccount({ cpf: cpf as string, name, newCpf });
+    await this.accountService.updateAccount({ cpf: cpf as string, newName, newCpf });
 
     return res.json({ msg: "Account updated" });
   }
-
-
 
 }
