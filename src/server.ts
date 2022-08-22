@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import "./shared/container";
+import "express-async-errors";
 
 import { app } from "./app";
 
