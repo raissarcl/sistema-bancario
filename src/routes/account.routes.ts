@@ -1,44 +1,115 @@
-import express from 'express';
+import express, { Request } from 'express';
 import { validateAccountRequest } from '../middlewares/validateAccountRequest';
-import { body } from 'express-validator';
+import { body, header, param, validationResult } from 'express-validator';
 import { AccountController } from '../controllers/account.controller';
 import { container } from 'tsyringe';
+import { Response } from 'express-serve-static-core';
 
 const accountController = container.resolve(AccountController);
 
 export const userRoutes = express.Router();
 
-// const validations = [
-//   body("name").isString(),
-//   body("cpf").ma
-// ];
+const validationCpfBody = body("cpf").notEmpty().isString().matches(/^\d{11}$/).withMessage("Should be 11 characters");
+const validationCpfHeader = header("cpf").isString().matches(/^\d{11}$/).withMessage("Should be 11 characters");
+const validationNameBody = body("name").notEmpty().isString().withMessage("Name is required");
+const validationAmmountBody = body("ammount").toFloat();
+const validationNewCpfBody = body("newCpf").isString().matches(/^\d{11}$/).withMessage("Should be 11 characters");
+const validationNewNameBody = body("newName").isString();
+const validationIdParam = param("id").isString();
+const validationToAccountCpfBody = body("toAccountCpf").isString().matches(/^\d{11}$/).withMessage("Should be 11 characters");
 
+userRoutes.post('/',
+  [validationCpfBody, validationNameBody],
+  (req: Request, res: Response) => {
 
-//Create Bank Account
-userRoutes.post('/', (req, res) => {
-  return accountController.createAccount(req, res);
-});
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-userRoutes.get('/', validateAccountRequest, (req, res) => {
-  return accountController.getAllAccounts(req, res);
-});
+    return accountController.createAccount(req, res);
+  });
 
-userRoutes.get('/:id', validateAccountRequest, (req, res) => {
-  return accountController.getAccount(req, res);
-});
+userRoutes.get('/',
+  validationCpfHeader,
+  validateAccountRequest,
+  (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-userRoutes.post('/deposit', validateAccountRequest, (req, res) => {
-  return accountController.depositMoney(req, res);
-});
+    return accountController.getAllAccounts(req, res);
+  });
 
-userRoutes.post('/withdraw', validateAccountRequest, (req, res) => {
-  return accountController.withdrawMoney(req, res);
-});
+userRoutes.delete('/',
+  validationCpfHeader,
+  validateAccountRequest,
+  (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-userRoutes.post('/transfer', validateAccountRequest, (req, res) => {
-  return accountController.transferMoney(req, res);
-});
+    return accountController.deleteAccount(req, res);
+  });
 
-userRoutes.post('/update', validateAccountRequest, (req, res) => {
-  return accountController.updateAccount(req, res);
-})
+userRoutes.patch('/',
+  [validationCpfHeader, validationNewCpfBody, validationNewNameBody],
+  validateAccountRequest,
+  (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    return accountController.updateAccount(req, res);
+  });
+
+userRoutes.get('/:id',
+  [validationCpfHeader, validationIdParam],
+  validateAccountRequest,
+  (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    return accountController.getAccount(req, res);
+  });
+
+userRoutes.post('/deposit',
+  [validationCpfHeader, validationAmmountBody],
+  validateAccountRequest,
+  (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    return accountController.depositMoney(req, res);
+  });
+
+userRoutes.post('/withdraw',
+  [validationCpfHeader, validationAmmountBody],
+  validateAccountRequest,
+  (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    return accountController.withdrawMoney(req, res);
+  });
+
+userRoutes.post('/transfer',
+  [validationToAccountCpfBody, validationAmmountBody],
+  validateAccountRequest,
+  (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    return accountController.transferMoney(req, res);
+  });
