@@ -9,13 +9,13 @@ const accountController = container.resolve(AccountController);
 export const userRoutes = express.Router();
 
 const validationCpfBody = body("cpf").notEmpty().isString().matches(/^\d{11}$/).withMessage("Should be an 11 characters string");
-const validationCpfHeader = header("cpf").isString().matches(/^\d{11}$/).withMessage("Should be 11 characters string");
+const validationCpfHeader = header("cpf").isString().matches(/^\d{11}$/).withMessage("Should be 11 an characters string");
 const validationNameBody = body("name").notEmpty().isString().withMessage("Name is required");
 const validationAmmountBody = body("ammount").toFloat();
-const validationNewCpfBody = body("newCpf").isString().matches(/^\d{11}$/).withMessage("Should be 11 characters string");
+const validationNewCpfBody = body("newCpf").isString().matches(/^\d{11}$/).withMessage("Should be an 11 characters string");
 const validationNewNameBody = body("newName").isString();
 const validationIdParam = param("id").isString();
-const validationToAccountCpfBody = body("toAccountCpf").isString().matches(/^\d{11}$/).withMessage("Should be 11 characters string");
+const validationToAccountCpfBody = body("toAccountCpf").isString().matches(/^\d{11}$/).withMessage("Should be an 11 characters string");
 
 userRoutes.post('/',
   [validationCpfBody, validationNameBody],
