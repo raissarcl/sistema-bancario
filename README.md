@@ -8,6 +8,7 @@ Sistema de contas bancárias em que é possível praticar ações comumente real
 - PostgreSQL.
 - Tsyringe.
 - PrismaORM.
+- Swagger.
 - Commitizen.
 - Git.
 - Docker.
@@ -15,54 +16,11 @@ Sistema de contas bancárias em que é possível praticar ações comumente real
 
 # Run
 1. Instalar dependências: `yarn`
-2. Subir o contêiner com o banco de dados em PostgreSQL: `docker compose up -d`
-3. Inicializar o prismaORM: `yarn prisma migrate dev --name init`
+2. Subir o contêiner com o banco de dados em PostgreSQL: `yarn db:create`
+3. Criar o banco com prismaORM: `yarn prisma:init`
 4. Inicializar o servidor: `yarn dev`
 
 # Rotas
 
-**URLbase:** `http://localhost:3000/account`
+Documentação com Swagger após inicializar o servidor encontra-se em: `http://localhost:3333/api-docs`
 
-## Criar conta
-**Método:** POST
-**URL:** URLbase
-- **Body (JSON)**: name, cpf
-
-## Buscar todas as contas
-**Método:** GET
-**URL:** URLbase
-- **Header:** cpf
-
-## Buscar uma conta
-**Método:** GET
-**URL:** URLbase/:id
-- **Header:** cpf
-
-## Deletar uma conta
-**Método:** DELETE
-**URL:** URLbase
-- **Header:** cpf
-
-## Atualizar uma conta
-**Método:** PATCH
-**URL:** URLbase
-- **Header:** cpf
--  **Body (JSON)**: newCpf, newName
-
-## Depositar dinheiro em uma conta
-**Método:** POST
-**URL:** URLbase/deposit
-- **Header:** cpf
--  **Body (JSON)**: ammount
-
-## Retirar dinheiro em uma conta
-**Método:** POST
-**URL:** URLbase/withdraw
-- **Header:** cpf
--  **Body (JSON)**: ammount
-
-## Transferir dinheiro para outra conta
-**Método:** POST
-**URL:** URLbase/transfer
-- **Header:** cpf
--  **Body (JSON)**: toAccountCpf, ammount
