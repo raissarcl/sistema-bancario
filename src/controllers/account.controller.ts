@@ -12,11 +12,13 @@ export class AccountController {
 
     await this.accountService.createAccount({ cpf, name });
 
-    return res.json({ msg: "Account created", name, cpf });
+    return res.status(201).json({ msg: "Account created", name, cpf });
   }
 
   async getAllAccounts(req: Request, res: Response) {
-    const accounts = await this.accountService.getAllAccounts();
+    const cpf = req.headers.cpf;
+
+    const accounts = await this.accountService.getAllAccounts(cpf as string);
 
     return res.json({ msg: "Accounts found", accounts });
   }
@@ -40,9 +42,9 @@ export class AccountController {
   async depositMoney(req: Request, res: Response) {
     const cpf = req.get('cpf');
 
-    const { ammount } = req.body;
+    const { value } = req.body;
 
-    await this.accountService.depositMoney(cpf as string, ammount);
+    await this.accountService.depositMoney(cpf as string, value);
 
     return res.json({ msg: "Deposit accepted" });
   }
@@ -50,9 +52,9 @@ export class AccountController {
   async withdrawMoney(req: Request, res: Response) {
     const cpf = req.get('cpf');
 
-    const { ammount } = req.body;
+    const { value } = req.body;
 
-    await this.accountService.withdrawMoney(cpf as string, ammount);
+    await this.accountService.withdrawMoney(cpf as string, value);
 
     return res.json({ msg: "Withdraw accepted" });
   }
@@ -60,9 +62,9 @@ export class AccountController {
   async transferMoney(req: Request, res: Response) {
     const cpf = req.get('cpf');
 
-    const { toAccountCpf, ammount } = req.body;
+    const { toAccountCpf, value } = req.body;
 
-    await this.accountService.transferMoney(cpf as string, toAccountCpf, ammount);
+    await this.accountService.transferMoney(cpf as string, toAccountCpf, value);
 
     return res.json({ msg: "Transfer accepted" });
   }

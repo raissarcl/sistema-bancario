@@ -18,7 +18,11 @@ export class AccountService {
     await this.repository.createAccount({ name, cpf });
   }
 
-  async getAllAccounts(): Promise<Account[]> {
+  async getAllAccounts(cpf: string): Promise<Account[]> {
+    const account = await this.repository.findAccountByCPF(cpf);
+
+    if (!account) throw new AppError("Account doesn't exist", 401);
+
     return await this.repository.getAllAccounts();
   }
 
@@ -33,51 +37,51 @@ export class AccountService {
   async getAccount(id: string): Promise<Account> {
     const account = await this.repository.findAccountByID(id);
 
-    if (!account) throw new AppError("Account doesn't found", 401);
+    if (!account) throw new AppError("Account doesn't exist");
 
     return account;
   }
 
-  async depositMoney(cpf: string, ammount: number): Promise<void> {
+  async depositMoney(cpf: string, value: number): Promise<void> {
     const account = await this.repository.findAccountByCPF(cpf);
 
-    if (!account) throw new AppError("Account doesn't exists", 401);
+    if (!account) throw new AppError("Account doesn't exist");
 
-    await this.repository.depositMoney(cpf, ammount);
+    await this.repository.depositMoney(cpf, value);
   }
 
-  async withdrawMoney(cpf: string, ammount: number): Promise<void> {
+  async withdrawMoney(cpf: string, value: number): Promise<void> {
     const account = await this.repository.findAccountByCPF(cpf);
 
     if (!account) {
-      throw new AppError("Account doesn't exists", 401);
+      throw new AppError("Account doesn't exist");
     }
 
-    if (account.balance < ammount) {
-      throw new AppError("Ammount not valid");
+    if (account.balance < value) {
+      throw new AppError("value not valid");
     }
 
-    await this.repository.withdrawMoney(cpf, ammount);
+    await this.repository.withdrawMoney(cpf, value);
   }
 
-  async transferMoney(fromAccountCpf: string, toAccountCpf: string, ammount: number): Promise<void> {
+  async transferMoney(fromAccountCpf: string, toAccountCpf: string, value: number): Promise<void> {
     const account = await this.repository.findAccountByCPF(fromAccountCpf);
     const toAccount = await this.repository.findAccountByCPF(toAccountCpf);
 
-    if (!account || !toAccount) throw new AppError("Account doesn't exist", 401);
+    if (!account || !toAccount) throw new AppError("Invalid data");
 
-    if (account === toAccount) throw new AppError("Can't transfer to own account");
+    if (account === toAccount) throw new AppError("Invalid data");
 
-    if (account.balance < ammount) throw new AppError("Ammount not valid");
+    if (account.balance < value) throw new AppError("Invalid data");
 
-    await this.repository.transferMoney(fromAccountCpf, toAccountCpf, ammount);
+    await this.repository.transferMoney(fromAccountCpf, toAccountCpf, value);
   }
 
   async updateAccount({ cpf, newCpf, newName }: { cpf: string, newCpf?: string, newName?: string }): Promise<void> {
     const account = await this.repository.findAccountByCPF(cpf);
     const updatedAccount = newCpf ? await this.repository.findAccountByCPF(newCpf) : newCpf;
 
-    if (!account || updatedAccount) throw new AppError("Invalid data");
+    if (!account || updatedAccount) throw new AppError("At least one account doesn't exist");
 
     await this.repository.updateAccount({ cpf, newCpf, newName });
   }

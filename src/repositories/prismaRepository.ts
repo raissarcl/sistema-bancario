@@ -46,49 +46,49 @@ export class PrismaRepository implements IAccountRepository {
     });
   }
 
-  async depositMoney(cpf: string, ammount: number): Promise<void> {
+  async depositMoney(cpf: string, value: number): Promise<void> {
     await this.prisma.account.update({
       where: {
         cpf
       },
       data: {
         balance: {
-          increment: ammount
+          increment: value
         },
         deposits: {
-          push: ammount
+          push: value
         }
       }
     });
   }
 
-  async withdrawMoney(cpf: string, ammount: number): Promise<void> {
+  async withdrawMoney(cpf: string, value: number): Promise<void> {
     await this.prisma.account.update({
       where: {
         cpf
       },
       data: {
         balance: {
-          decrement: ammount,
+          decrement: value,
         },
         withdraws: {
-          push: ammount
+          push: value
         }
       }
     });
   }
 
-  async transferMoney(fromAccountCpf: string, toAccountCpf: string, ammount: number): Promise<void> {
+  async transferMoney(fromAccountCpf: string, toAccountCpf: string, value: number): Promise<void> {
     await this.prisma.account.update({
       where: {
         cpf: fromAccountCpf
       },
       data: {
         balance: {
-          decrement: ammount,
+          decrement: value,
         },
         transfers: {
-          push: { toAccountCpf, ammount }
+          push: { toAccountCpf, value }
         }
       }
     });
@@ -99,10 +99,10 @@ export class PrismaRepository implements IAccountRepository {
       },
       data: {
         balance: {
-          increment: ammount,
+          increment: value,
         },
         transfers: {
-          push: { fromAccountCpf, ammount }
+          push: { fromAccountCpf, value }
         }
       }
     });
