@@ -1,5 +1,6 @@
-import express, { Request, Response } from 'express';
-import { validateAccountRequest } from '../middlewares/validateAccountRequest';
+import express from 'express';
+import { validateAccountRequest } from '../middlewares/authenticateAccountRequest';
+import { validate } from '../middlewares/validations';
 import { body, header, param, validationResult } from 'express-validator';
 import { AccountController } from '../controllers/account.controller';
 import { container } from 'tsyringe';
@@ -10,105 +11,65 @@ export const userRoutes = express.Router();
 
 const validationCpfBody = body("cpf").notEmpty().isString().matches(/^\d{11}$/).withMessage("Should be an 11 characters string");
 const validationCpfHeader = header("cpf").isString().matches(/^\d{11}$/).withMessage("Should be 11 an characters string");
-const validationNameBody = body("name").notEmpty().isString().withMessage("Name is required");
-const validationAmmountBody = body("ammount").toFloat();
-const validationNewCpfBody = body("newCpf").isString().matches(/^\d{11}$/).withMessage("Should be an 11 characters string");
-const validationNewNameBody = body("newName").isString();
-const validationIdParam = param("id").isString();
 const validationToAccountCpfBody = body("toAccountCpf").isString().matches(/^\d{11}$/).withMessage("Should be an 11 characters string");
+const validationNewCpfBody = body("newCpf").optional().isString().matches(/^\d{11}$/).withMessage("Should be an 11 characters string");
+const validationNameBody = body("name").notEmpty().isString().withMessage("Name is required");
+const validationNewNameBody = body("newName").optional().isString();
+const validationvalueBody = body("value").toFloat().isFloat({ gt: 0 }).withMessage("Value should be greater than 0");
+const validationIdParam = param("id").isString();
+
 
 userRoutes.post('/',
-  [validationCpfBody, validationNameBody],
-  (req: Request, res: Response) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  validate([validationCpfBody, validationNameBody]),
+  (req, res) => {
     return accountController.createAccount(req, res);
   });
 
 userRoutes.get('/',
-  validationCpfHeader,
+  validate([validationCpfHeader]),
   validateAccountRequest,
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  (req, res) => {
     return accountController.getAllAccounts(req, res);
   });
 
 userRoutes.delete('/',
-  validationCpfHeader,
+  validate([validationCpfHeader]),
   validateAccountRequest,
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  (req, res) => {
     return accountController.deleteAccount(req, res);
   });
 
 userRoutes.patch('/',
-  [validationCpfHeader, validationNewCpfBody, validationNewNameBody],
+  validate([validationCpfHeader, validationNewCpfBody, validationNewNameBody]),
   validateAccountRequest,
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  (req, res) => {
     return accountController.updateAccount(req, res);
   });
 
 userRoutes.get('/:id',
-  [validationCpfHeader, validationIdParam],
+  validate([validationCpfHeader, validationIdParam]),
   validateAccountRequest,
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  (req, res) => {
     return accountController.getAccount(req, res);
   });
 
 userRoutes.post('/deposit',
-  [validationCpfHeader, validationAmmountBody],
+  validate([validationCpfHeader, validationvalueBody]),
   validateAccountRequest,
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  (req, res) => {
     return accountController.depositMoney(req, res);
   });
 
 userRoutes.post('/withdraw',
-  [validationCpfHeader, validationAmmountBody],
+  validate([validationCpfHeader, validationvalueBody]),
   validateAccountRequest,
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  (req, res) => {
     return accountController.withdrawMoney(req, res);
   });
 
 userRoutes.post('/transfer',
-  [validationToAccountCpfBody, validationAmmountBody],
+  validate([validationToAccountCpfBody, validationvalueBody]),
   validateAccountRequest,
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  (req, res) => {
     return accountController.transferMoney(req, res);
   });
