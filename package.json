@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node ./dist/server.js",
     "dev": "ts-node-dev ./src/server.ts",
+    "prisma:init": "yarn prisma migrate dev --name init",
+    "db:create": "docker compose up -d",
     "db:rm": "docker compose stop && docker compose rm",
     "db:restart": "docker compose stop && docker compose rm && timeout 1 && docker compose up -d",
     "cm": "cz"
