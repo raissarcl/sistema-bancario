@@ -1,0 +1,314 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Sistema Bancário",
+    "description": "Rotas do Sistema Bancário",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/account": {
+      "get": {
+        "summary": "Retorna todas as contas",
+        "description": "Rota responsável por retornar todas as contas existentes",
+        "tags": [
+          "Conta"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contas retornadas com sucesso"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "post": {
+        "summary": "Criação de uma conta",
+        "description": "Rota responsável pela criação de uma nova conta bancária no sistema",
+        "tags": [
+          "Conta"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              },
+              "example": {
+                "name": "John",
+                "cpf": "11122233399"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Conta criada com sucesso"
+          },
+          "400": {
+            "description": "Conta já existente"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Atualiza dados de uma conta",
+        "description": "Rota responsável pela atualização de dados de uma conta já existente",
+        "tags": [
+          "Conta"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccount"
+              },
+              "example": {
+                "newName": "Joseph",
+                "newCpf": "66677788899"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Conta atualizada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deleta uma conta",
+        "description": "Rota responsável pela deleção de uma conta já existente",
+        "tags": [
+          "Conta"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conta deletada com sucesso"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      }
+    },
+    "/account/{id}": {
+      "get": {
+        "summary": "Retorna uma conta pelo ID",
+        "description": "Rota responsável por retornar uma única conta pelo ID",
+        "tags": [
+          "Conta"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Retorna conta pelo ID",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conta retornada com sucesso"
+          },
+          "400": {
+            "description": "Conta inexistente"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      }
+    },
+    "/account/deposit": {
+      "post": {
+        "summary": "Deposita dinheiro em uma conta",
+        "description": "Rota responsável por depositar dinheiro em uma conta já existente",
+        "tags": [
+          "Conta"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Value"
+              },
+              "example": {
+                "value": "100"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Depósito realizado com sucesso"
+          },
+          "400": {
+            "description": "Valor não suportado"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      }
+    },
+    "/account/withdraw": {
+      "post": {
+        "summary": "Retira dinheiro de uma conta",
+        "description": "Rota responsável por retirar dinheiro de uma conta já existente",
+        "tags": [
+          "Conta"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Value"
+              },
+              "example": {
+                "value": "100"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Valor retirado com sucesso"
+          },
+          "400": {
+            "description": "Valor inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      }
+    },
+    "/account/transfer": {
+      "post": {
+        "summary": "Transferência de dinheiro entre contas",
+        "description": "Rota responsável pela transferência de dinheiro entre contas já existentes",
+        "tags": [
+          "Conta"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Transfer"
+              },
+              "example": {
+                "toAccountCpf": "44455566699",
+                "value": 50
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tranferência realizada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Account": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "cpf": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateAccount": {
+        "type": "object",
+        "properties": {
+          "newName": {
+            "type": "string"
+          },
+          "newCpf": {
+            "type": "string"
+          }
+        }
+      },
+      "Value": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          }
+        }
+      },
+      "Transfer": {
+        "type": "object",
+        "properties": {
+          "toAccountCpf": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "cpf",
+        "description": "Autenticação por cpf válido"
+      }
+    }
+  }
+}
