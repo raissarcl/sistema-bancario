@@ -1,5 +1,5 @@
 # Resumo
-Sistema de contas bancárias em que é possível praticar ações comumente realizadas em modelos reais, também como algumas fora do escopo em intuito de demonstração da capacidade de funcionamento do código. 
+Sistema de contas bancárias com 3 operações principais: depósito, saque e transferência. É possível a criação de usuários e as necessárias validações para autenticação e autorização. 
 
 # Tecnologias 
 - Typescript.
