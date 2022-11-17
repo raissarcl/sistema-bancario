@@ -1,10 +1,42 @@
 import { NextFunction, Request, Response } from "express";
+import { verify } from 'jsonwebtoken';
+import auth from "../config/auth";
+import { Prisma } from "../database";
 import { AppError } from "../errors/AppError";
+import { PrismaRepository } from "../repositories/prismaRepository";
 
-export function validateAccountRequest(req: Request, res: Response, next: NextFunction) {
-  const cpf = req.get('cpf');
+interface IPayload {
+  sub: string;
+}
 
-  if (!cpf) throw new AppError("Unauthorized", 401);
+export async function validateAccountRequest(req: Request, res: Response, next: NextFunction) {
 
-  next();
+  const authHeader = req.headers.authorization;
+
+  const prismaRepository = new PrismaRepository(new Prisma());
+
+  if (!authHeader) {
+    throw new AppError("Token missing", 401);
+  }
+
+  const [, token] = authHeader.split(" ");
+
+  try {
+    const { sub: account_id } = verify(token, auth.secret_token) as IPayload;
+
+    const account = await prismaRepository.findAccountByID(account_id);
+
+    if (!account) {
+      throw new AppError("User doesn't exists", 401);
+    }
+
+    req.account = {
+      cpf: account.cpf
+    }
+
+    next();
+
+  } catch {
+    throw new AppError("invalid token", 401);
+  }
 }

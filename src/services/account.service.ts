@@ -3,12 +3,33 @@ import { AccountDTO } from "../dtos/AccountDTO.dto";
 import { Account } from "@prisma/client";
 import { AppError } from "../errors/AppError";
 import { IAccountRepository } from "../repositories/interfaces/IAccountRepository";
+import { sign } from "jsonwebtoken";
+import auth from '../config/auth';
 
 
 @injectable()
 export class AccountService {
 
   constructor(@inject("PrismaRepository") private repository: IAccountRepository) { }
+
+  async authenticateUser(name: string, cpf: string) {
+    const account = await this.repository.findAccountByCPF(cpf);
+
+    if (!account) throw new AppError("Account doesn't exist");
+
+    if (account.name !== name) throw new AppError("Incorrect values");
+
+    const token = sign({}, auth.secret_token, {
+      subject: account.id,
+      expiresIn: auth.expires_in_token,
+    });
+
+    return {
+      name: account.name,
+      cpf: account.cpf,
+      token
+    };
+  }
 
   async createAccount({ name, cpf }: AccountDTO): Promise<void> {
     const account = await this.repository.findAccountByCPF(cpf);
@@ -18,11 +39,7 @@ export class AccountService {
     await this.repository.createAccount({ name, cpf });
   }
 
-  async getAllAccounts(cpf: string): Promise<Account[]> {
-    const account = await this.repository.findAccountByCPF(cpf);
-
-    if (!account) throw new AppError("Account doesn't exist", 401);
-
+  async getAllAccounts(): Promise<Account[]> {
     return await this.repository.getAllAccounts();
   }
 

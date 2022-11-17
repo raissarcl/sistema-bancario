@@ -13,11 +13,6 @@
         "tags": [
           "Conta"
         ],
-        "security": [
-          {
-            "apiKeyAuth": []
-          }
-        ],
         "responses": {
           "200": {
             "description": "Contas retornadas com sucesso"
@@ -63,7 +58,7 @@
         ],
         "security": [
           {
-            "apiKeyAuth": []
+            "bearerAuth": []
           }
         ],
         "requestBody": {
@@ -99,7 +94,7 @@
         ],
         "security": [
           {
-            "apiKeyAuth": []
+            "bearerAuth": []
           }
         ],
         "responses": {
@@ -129,7 +124,7 @@
         ],
         "security": [
           {
-            "apiKeyAuth": []
+            "bearerAuth": []
           }
         ],
         "responses": {
@@ -166,7 +161,7 @@
         },
         "security": [
           {
-            "apiKeyAuth": []
+            "bearerAuth": []
           }
         ],
         "responses": {
@@ -191,7 +186,7 @@
         ],
         "security": [
           {
-            "apiKeyAuth": []
+            "bearerAuth": []
           }
         ],
         "requestBody": {
@@ -228,7 +223,7 @@
         ],
         "security": [
           {
-            "apiKeyAuth": []
+            "bearerAuth": []
           }
         ],
         "requestBody": {
@@ -303,11 +298,10 @@
       }
     },
     "securitySchemes": {
-      "apiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "cpf",
-        "description": "Autenticação por cpf válido"
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

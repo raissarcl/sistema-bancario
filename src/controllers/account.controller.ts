@@ -7,6 +7,15 @@ export class AccountController {
 
   constructor(private accountService: AccountService) { }
 
+  async authenticateUser(req: Request, res: Response) {
+
+    const { name, cpf } = req.body;
+
+    const jwt = await this.accountService.authenticateUser(name, cpf);
+
+    return res.json(jwt);
+  }
+
   async createAccount(req: Request, res: Response) {
     const { name, cpf } = req.body;
 
@@ -16,15 +25,13 @@ export class AccountController {
   }
 
   async getAllAccounts(req: Request, res: Response) {
-    const cpf = req.headers.cpf;
-
-    const accounts = await this.accountService.getAllAccounts(cpf as string);
+    const accounts = await this.accountService.getAllAccounts();
 
     return res.json({ msg: "Accounts found", accounts });
   }
 
   async deleteAccount(req: Request, res: Response) {
-    const cpf = req.get('cpf');
+    const { cpf } = req.account;
 
     await this.accountService.deleteAccount(cpf as string);
 
@@ -40,7 +47,7 @@ export class AccountController {
   }
 
   async depositMoney(req: Request, res: Response) {
-    const cpf = req.get('cpf');
+    const { cpf } = req.account;
 
     const { value } = req.body;
 
@@ -50,7 +57,7 @@ export class AccountController {
   }
 
   async withdrawMoney(req: Request, res: Response) {
-    const cpf = req.get('cpf');
+    const { cpf } = req.account;
 
     const { value } = req.body;
 
@@ -60,7 +67,7 @@ export class AccountController {
   }
 
   async transferMoney(req: Request, res: Response) {
-    const cpf = req.get('cpf');
+    const { cpf } = req.account;
 
     const { toAccountCpf, value } = req.body;
 
@@ -70,7 +77,7 @@ export class AccountController {
   }
 
   async updateAccount(req: Request, res: Response) {
-    const cpf = req.get('cpf');
+    const { cpf } = req.account;
 
     const { newName, newCpf } = req.body;
 

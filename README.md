@@ -1,10 +1,11 @@
 # Resumo
-Sistema de contas bancárias com 3 operações principais: depósito, saque e transferência. É possível a criação de usuários e as necessárias validações para autenticação e autorização. 
+Sistema de contas bancárias com 3 operações principais: depósito, saque e transferência. É possível a criação de usuários com suas validações e Auth. 
 
 # Tecnologias 
 - Typescript.
 - Express.
 - Express-validator.
+- JWT.
 - PostgreSQL.
 - Tsyringe.
 - PrismaORM.
@@ -21,6 +22,5 @@ Sistema de contas bancárias com 3 operações principais: depósito, saque e tr
 4. Inicializar o servidor: `yarn dev`
 
 # Rotas
-
 Documentação com Swagger após inicializar o servidor encontra-se em: `http://localhost:3333/api-docs`
 
