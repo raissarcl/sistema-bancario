@@ -21,6 +21,8 @@ Sistema de contas bancárias com 3 operações principais: depósito, saque e tr
 3. Criar o banco com prismaORM: `yarn prisma:init`
 4. Inicializar o servidor: `yarn dev`
 
+**OBS.:**: `.env` exposto propositalmente ;).
+
 # Rotas
 Documentação com Swagger após inicializar o servidor encontra-se em: `http://localhost:3333/api-docs`
 
